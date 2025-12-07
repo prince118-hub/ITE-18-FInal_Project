@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls.js";
 import * as dat from "lil-gui";
 
 /**
@@ -191,9 +190,6 @@ scene.add(camera);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
-// PointerLock controls for first-person exploration (desktop)
-const pointerControls = new PointerLockControls(camera, document.body);
-
 // Simple on-screen instructions
 const instructions = document.createElement("div");
 instructions.style.position = "absolute";
@@ -205,13 +201,8 @@ instructions.style.color = "#fff";
 instructions.style.fontFamily = "sans-serif";
 instructions.style.fontSize = "13px";
 instructions.style.zIndex = "999";
-instructions.innerHTML = "Click canvas to lock pointer — WASD to move.";
+instructions.innerHTML = "Click and drag to look — WASD to move.";
 document.body.appendChild(instructions);
-
-// Click canvas to lock pointer
-canvas.addEventListener("click", () => {
-  pointerControls.lock();
-});
 
 // Movement state
 let moveForward = false;
@@ -279,14 +270,24 @@ const tick = () => {
   // Update controls
   controls.update();
 
-  // PointerLock WASD movement (desktop)
-  if (pointerControls.isLocked === true) {
-    const speed = 5; // units per second
-    if (moveForward) pointerControls.moveForward(speed * delta);
-    if (moveBackward) pointerControls.moveForward(-speed * delta);
-    if (moveLeft) pointerControls.moveRight(-speed * delta);
-    if (moveRight) pointerControls.moveRight(speed * delta);
-  }
+  // WASD movement relative to camera direction (no pointer lock)
+  const speed = 5; // units per second
+  const moveDistance = speed * delta;
+  const forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  forward.y = 0; // keep movement on XZ plane
+  forward.normalize();
+  const right = new THREE.Vector3();
+  right.crossVectors(forward, camera.up).normalize();
+
+  if (moveForward)
+    camera.position.add(forward.clone().multiplyScalar(moveDistance));
+  if (moveBackward)
+    camera.position.add(forward.clone().multiplyScalar(-moveDistance));
+  if (moveLeft)
+    camera.position.add(right.clone().multiplyScalar(-moveDistance));
+  if (moveRight)
+    camera.position.add(right.clone().multiplyScalar(moveDistance));
 
   // Render
   renderer.render(scene, camera);
