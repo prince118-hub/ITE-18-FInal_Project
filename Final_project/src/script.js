@@ -122,7 +122,7 @@ const wallThickness = 0.2;
 const floorWidth = 30;
 const floorDepth = 40;
 const wallMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
+  color: 0x9ecad6,
   side: THREE.DoubleSide,
 });
 
