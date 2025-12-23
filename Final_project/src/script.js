@@ -117,7 +117,7 @@ scene.add(directionalLight);
 /**
  * Walls — white walls surrounding the floor
  */
-const wallHeight = 4;
+const wallHeight = 8;
 const wallThickness = 0.2;
 const floorWidth = 30;
 const floorDepth = 40;
