@@ -38,7 +38,7 @@ scene.add(cube);
  * Floor
  */
 const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 20),
+  new THREE.PlaneGeometry(30, 40),
   new THREE.MeshStandardMaterial({ map: floorTexture, side: THREE.DoubleSide })
 );
 floor.rotation.x = -Math.PI / 2;
@@ -119,7 +119,8 @@ scene.add(directionalLight);
  */
 const wallHeight = 4;
 const wallThickness = 0.2;
-const wallLength = 20;
+const floorWidth = 30;
+const floorDepth = 40;
 const wallMaterial = new THREE.MeshStandardMaterial({
   color: 0xffffff,
   side: THREE.DoubleSide,
@@ -127,28 +128,28 @@ const wallMaterial = new THREE.MeshStandardMaterial({
 
 // North wall (negative Z)
 const wallNorth = new THREE.Mesh(
-  new THREE.BoxGeometry(wallLength, wallHeight, wallThickness),
+  new THREE.BoxGeometry(floorWidth, wallHeight, wallThickness),
   wallMaterial
 );
-wallNorth.position.set(0, -1 + wallHeight / 2, -wallLength / 2);
+wallNorth.position.set(0, -1 + wallHeight / 2, -floorDepth / 2);
 scene.add(wallNorth);
 
 // South wall (positive Z)
 const wallSouth = wallNorth.clone();
-wallSouth.position.set(0, -1 + wallHeight / 2, wallLength / 2);
+wallSouth.position.set(0, -1 + wallHeight / 2, floorDepth / 2);
 scene.add(wallSouth);
 
 // West wall (negative X)
 const wallWest = new THREE.Mesh(
-  new THREE.BoxGeometry(wallThickness, wallHeight, wallLength),
+  new THREE.BoxGeometry(wallThickness, wallHeight, floorDepth),
   wallMaterial
 );
-wallWest.position.set(-wallLength / 2, -1 + wallHeight / 2, 0);
+wallWest.position.set(-floorWidth / 2, -1 + wallHeight / 2, 0);
 scene.add(wallWest);
 
 // East wall (positive X)
 const wallEast = wallWest.clone();
-wallEast.position.set(wallLength / 2, -1 + wallHeight / 2, 0);
+wallEast.position.set(floorWidth / 2, -1 + wallHeight / 2, 0);
 scene.add(wallEast);
 
 /**
